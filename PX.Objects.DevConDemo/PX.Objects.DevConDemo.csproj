@@ -55,4 +55,30 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>SET ACUMATICAROOT="$(SolutionDir)Site"
+
+SET CSTVERSION=%25DATE%25 %25TIME%25
+
+ECHO ON
+
+ECHO ==============================================
+ECHO      POST BUILD $(ProjectName)
+ECHO      %25CSTVERSION%25
+
+if not exist "$(SolutionDir)AcumaticaProjects\DevConDemo\Bin\" mkdir "$(SolutionDir)AcumaticaProjects\DevConDemo\Bin\"
+
+ECHO Copy $(TargetFileName) to "$(SolutionDir)AcumaticaProjects\DevConDemo\Bin\"
+
+copy "$(TargetDir)$(TargetFileName)" "$(SolutionDir)AcumaticaProjects\DevConDemo\Bin\$(TargetFileName)" /y
+
+ECHO Copy $(SolutionDir)Site\Pages\DC\*.aspx.*"  to  $(SolutionDir)AcumaticaProjects\DevConDemo\Pages\DC\
+
+if exist "$(SolutionDir)Site\Pages\DC\" (
+xcopy /E /Y /Q "$(SolutionDir)Site\Pages\DC\*.aspx*" "$(SolutionDir)AcumaticaProjects\DevConDemo\Pages\DC\" &gt; nul
+)
+
+ECHO      POST BUILD $(ProjectName)
+ECHO ==============================================</PostBuildEvent>
+  </PropertyGroup>
 </Project>
