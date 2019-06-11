@@ -1,0 +1,3 @@
+SourceSiteDir=D:\AcumaticaERP\Clean19R1
+SourcePortalDir=
+UpdateBin=False

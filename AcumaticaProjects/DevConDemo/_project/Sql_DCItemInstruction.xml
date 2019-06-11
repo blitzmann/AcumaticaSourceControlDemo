@@ -1,0 +1,14 @@
+﻿<Sql TableName="DCItemInstruction" TableSchemaXml="#CDATA">
+    <CDATA name="TableSchemaXml"><![CDATA[<table name="DCItemInstruction">
+  <col name="CompanyID" type="Int" default="Zero" />
+  <col name="InventoryID" type="Int" />
+  <col name="LineID" type="Int" />
+  <col name="SortOrder" type="Int" />
+  <col name="Instruction" type="NVarChar(500)" />
+  <index name="DCItemInstruction_PK" clustered="true" primary="true" unique="true">
+    <col name="CompanyID" />
+    <col name="InventoryID" />
+    <col name="LineID" />
+  </index>
+</table>]]></CDATA>
+</Sql>

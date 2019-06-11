@@ -1,0 +1,7 @@
+<Rollback>
+  <File path="CstPublished\pages_in\in202500.aspx" method="Delete" />
+  <File path="CstPublished\pages_in\in202500.aspx.cs" method="Delete" />
+  <File path="Bin\PX.Objects.DevConDemo.dll" method="Delete" />
+  <File path="Pages\DC\DC508000.aspx" method="Delete" />
+  <File path="Pages\DC\DC508000.aspx.cs" method="Delete" />
+</Rollback>
