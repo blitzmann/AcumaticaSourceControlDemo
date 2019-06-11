@@ -7,14 +7,11 @@ $slnFullName = Join-Path (get-item $PSScriptRoot).parent.FullName $slnName
 $buildConfiguration = "/property:Configuration=Release"
 
 
-
 $writeHostStartColor = 'yellow'
 $writeHostFinishColor = 'Red'
 Write-Host "==================================================================" -foregroundcolor $writeHostStartColor
 Write-Host ("=====    BEGIN: BUILDING SOLUTION {0}" -f $slnName ) -foregroundcolor $writeHostStartColor
 Write-Host "==================================================================" -foregroundcolor $writeHostStartColor
-Write-Host " "
-Write-Host $slnFullName
 Write-Host " "
 
 try
@@ -44,4 +41,3 @@ catch
 
 Write-Host " "
 Read-Host 'Press Enter to continue...' | Out-Null 
-
