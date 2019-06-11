@@ -1,6 +1,7 @@
 ﻿using PX.Data;
+using PX.Objects.IN;
 
-namespace PX.Objects.IN
+namespace PX.Objects.DevConDemo
 {
     public class InventoryItemDCExt : PXCacheExtension<InventoryItem>
     {
