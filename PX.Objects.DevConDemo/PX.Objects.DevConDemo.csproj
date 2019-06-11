@@ -78,6 +78,21 @@ if exist "$(SolutionDir)Site\Pages\DC\" (
 xcopy /E /Y /Q "$(SolutionDir)Site\Pages\DC\*.aspx*" "$(SolutionDir)AcumaticaProjects\DevConDemo\Pages\DC\" &gt; nul
 )
 
+if "Release"=="$(ConfigurationName)" (
+
+REM *** Source control only includes bin - not full site. Simple check of web.config for is site indicator
+if exist "$(SolutionDir)Site\web.config" (
+
+ECHO Release Build - Building DevConDemo Customization Package Version %25CSTVERSION%25 
+
+REM *** Exclude the Install folder from source control ***
+if not exist "$(SolutionDir)AcumaticaProjects\Install\" mkdir "$(SolutionDir)AcumaticaProjects\Install\"
+
+"$(SolutionDir)Site\Bin\PX.CommandLine.exe" /method "BuildProject" /website "$(SolutionDir)Site" /in "$(SolutionDir)AcumaticaProjects\DevConDemo" /out "$(SolutionDir)AcumaticaProjects\Install\DevConDemo.zip" /level "1" /description "DevConDemo - %25CSTVERSION%25"
+
+)
+)
+
 ECHO      POST BUILD $(ProjectName)
 ECHO ==============================================</PostBuildEvent>
   </PropertyGroup>
