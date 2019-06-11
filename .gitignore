@@ -338,3 +338,7 @@ ASALocalRun/
 
 # BeatPulse healthcheck temp database
 healthchecksdb
+/ERP/*
+/Site/*
+!/Site/App_Data/CodeRepository
+!/Site/Bin
