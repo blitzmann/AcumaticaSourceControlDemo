@@ -342,5 +342,7 @@ healthchecksdb
 /Site/*
 !/Site/App_Data/CodeRepository
 !/Site/Bin
-/Site/Bin/PX.Objects.DevConDemo.dll
+/Site/Bin/PX.Objects.DevConDemo.*
 /AcumaticaProjects/Install
+/Config/Installer/*
+!/Config/Installer/UnzipInstall.ps1
