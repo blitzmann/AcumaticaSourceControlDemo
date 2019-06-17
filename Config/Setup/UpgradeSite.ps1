@@ -97,10 +97,7 @@ Function Delete-Item($dItem)
     {
         Write-Host ("Deleting: {0}" -f $dItem)
         Remove-Item $dItem -Force -Recurse
-        return
     }
-
-    Write-Host ("Path Doesn't Exist: {0}" -f $dItem) -ForegroundColor Gray
 }
 
 Function Test-ValidPath($path)
@@ -162,6 +159,40 @@ Function MoveCreateSiteTempFolder($erpFolder, $installRootFolder, $tempFolderNam
     return $tempErpPath
 }
 
+Function Get-DatabaseName($sitePath)
+{
+    $webConfigPath = Join-Path $sitePath 'Web.Config'
+
+    if([System.IO.File]::Exists($webConfigPath) -eq $false)
+    {
+        Write-Error ("Cannot find web.config file: {0}" -f $webConfigPath)
+        return
+    }
+
+    $xml = [xml](Get-Content $webConfigPath)
+     
+    $connNodes = $xml.configuration.connectionStrings.add
+    [string]$connString = ""
+    #starting in 6.0 there are 2 connection strings in the web config...
+    foreach($node in $connNodes)
+    {
+        if($node.name -eq "ProjectX")
+        {
+            $connString = $node.connectionString
+        }
+    }
+
+    $connStringSplit = $connString.Split(";")
+    foreach($connParam in $connStringSplit)
+    {
+        $kv = $connParam.Split("=")
+        if($kv[0] -eq "Initial Catalog")
+        {
+            return $kv[1]
+        }
+    }
+}
+
 # Update the web config for developer settings and cleanup temp/backup folder locations
 Function CleanupWebConfig($sitePath, $erpPath)
 {
@@ -169,7 +200,7 @@ Function CleanupWebConfig($sitePath, $erpPath)
 
     if([System.IO.File]::Exists($webConfigPath) -eq $false)
     {
-        Write-Error ("Cannot find web.config file: {0}" -f $webConfigPath)
+        Write-Error ("Cannot find web.config files; {0}" -f $webConfigPath)
         return
     }
 
@@ -215,11 +246,11 @@ Function CleanupWebConfig($sitePath, $erpPath)
     $xml.Save($webConfigPath)
 }
 
-function Create-AcumaticaSite([string]$siteVirtualDirectoryName, [string]$databaseName, [bool]$isNewDb, [bool]$insertDemoData, [bool]$isPortal, [string]$acuSitePath, [string]$commandToolDir)
+function Upgrade-AcumaticaSite([string]$siteVirtualDirectoryName, [string]$databaseName, [bool]$isPortal, [string]$acuSitePath, [string]$commandToolDir)
 {
     Write-Host " "
     Write-Host "===========================================================================================================================" -foregroundcolor $script:writeHostColor
-    Write-Host ("=====    BEGIN: Creating new site {0} using database {1}" -f $siteVirtualDirectoryName, $databaseName ) -foregroundcolor $script:writeHostColor
+    Write-Host ("=====    BEGIN: Upgrading site {0} using database {1}" -f $siteVirtualDirectoryName, $databaseName ) -foregroundcolor $script:writeHostColor
     Write-Host "===========================================================================================================================" -foregroundcolor $script:writeHostColor
     Write-Host " "
     Write-Host " "
@@ -233,8 +264,8 @@ function Create-AcumaticaSite([string]$siteVirtualDirectoryName, [string]$databa
     $CMD = Join-Path $AcumaticaConfigDir $ac
     Write-Host $CMD
 
-    $configMode = '-configmode:"NewInstance"'
-    $dbNew = ('-dbnew:"{0}"' -f $isNewDb)
+    $configMode = '-configmode:"UpgradeSite"'
+    $dbNew = '-dbnew:"false"'
     $dbWinAuth = '-dbsrvwinauth:"True"'
     $dbServerName = '-dbsrvname:"(local)"'
     $dbName = ('-dbname:"{0}"' -f $databaseName)
@@ -245,24 +276,36 @@ function Create-AcumaticaSite([string]$siteVirtualDirectoryName, [string]$databa
     $virtualDirName = ('-svirtdir:"{0}"' -f $siteVirtualDirectoryName)
     $appPool = '-spool:"DefaultAppPool"'
     $salesDemo = ''
-    if($insertDemoData)
-    {
-        $salesDemo = 'SalesDemo'
-    }
     $company = ('-company:"CompanyID=2;ParentID=1;Visible=True;CompanyType={0};LoginName=TestCompany;Delete=False"' -f $salesDemo)
 
     Write-Host ""
-    Write-Host ("Running {0}" -f $CMD) -ForegroundColor Yellow
+    Write-Host ("Running {0} using {1}" -f $CMD, $configMode) -ForegroundColor Yellow
     Write-Host ""
     Write-Host $CMD $configMode $dbNew $dbWinAuth $dbServerName $dbName $dbConnWinAuth $sitePath $company $appPool $localWebsite $portalSite $virtualDirName
     Write-Host ""
 
     & $CMD $configMode $dbNew $dbWinAuth $dbServerName $dbName $dbConnWinAuth $sitePath $company $appPool $localWebsite $portalSite $virtualDirName
 
+    Write-Host " "
+    Write-Host "===========================================================================================================================" -foregroundcolor $script:writeHostColor
+
+    # first part above updates the site files only. Here we need to also update the database
+    $configMode = '-configmode:"DBMaint"'
+    $dbShrink = '-dbshrink:"Yes"'
+    $dbUpdate = '-dbupdate:"Yes"'
+
+    Write-Host ""
+    Write-Host ("Running {0} using {1}" -f $CMD, $configMode) -ForegroundColor Yellow
+    Write-Host ""
+    Write-Host $CMD $configMode $dbNew $dbWinAuth $dbServerName $dbName $dbConnWinAuth $dbShrink $dbUpdate
+    Write-Host ""
+
+    & $CMD $configMode $dbNew $dbWinAuth $dbServerName $dbName $dbConnWinAuth $dbShrink $dbUpdate
+
     Write-Host " " 
     Write-Host " "
     Write-Host "===========================================================================================================================" -foregroundcolor $script:writeHostColor
-    Write-Host "=====    FINISHED: Creating new site" -foregroundcolor $script:writeHostColor
+    Write-Host "=====    FINISHED: Upgrading site" -foregroundcolor $script:writeHostColor
     Write-Host "===========================================================================================================================" -foregroundcolor $script:writeHostColor
     Write-Host " "
 }
@@ -283,7 +326,7 @@ Try
 
     if([string]::IsNullOrWhiteSpace($commandToolPath))
     {
-        $commandToolPath = "D:\AcumaticaInstalls\19.104.0024\Acumatica ERP\Data"
+        $commandToolPath = "D:\AcumaticaInstalls\19.105.0032\Acumatica ERP\Data"
         #$commandToolPath = Read-Host -Prompt "Unable to find ERP Data folder. Enter ERP Data folder location. (Ex: 'C:\Program Files\Acumatica ERP')"
     }
 
@@ -295,14 +338,19 @@ Try
     [string]$version = Get-AcumaticaVersion $commandToolPath
     $writeHostColor = 'yellow'
 
+    if([System.IO.File]::Exists($webConfigPath) -eq $false)
+    {
+        throw ("Missing file {0}" -f $webConfigPath)
+    }
+
+    $webVersion = Get-WebConfigVersion $webConfigPath
+
     Write-Host ""
-    Write-Host ("Using Acumatica configuration version {0}" -f $version) -foregroundcolor Yellow
+    Write-Host ("Using Acumatica configuration version {0}. Upgrading from {1}" -f $version, $webVersion) -foregroundcolor Yellow
     Write-Host ""
 
     $instanceName = "DevConDemo"
-    $dbName = $instanceName
-    [bool]$isNewDb = $false
-    [bool]$insertDemoData = $isNewDb
+    $dbName = Get-DatabaseName $sitePath
     [bool]$isPortal = $false
 
     # If the site already exists the prompt will ask this question to continue:
@@ -317,12 +365,16 @@ Try
         Create-Directory $siteBackupDir
         $now = Get-Date -Format FileDateTime
         $siteTimeStamp = ("Site_{0}" -f $now)
+        if(![string]::IsNullOrWhiteSpace($commandToolPath))
+        {
+            $siteTimeStamp = ("Site_{0}_{1}" -f $webVersion, $now)
+        }
         $destinationSitePath = Join-Path $siteBackupDir $siteTimeStamp
-        Write-Host ("MOVING {0} TO {1}" -f $sitePath, $destinationSitePath)
-        Move-Item $sitePath $destinationSitePath
+        Write-Host ("COPYING {0} TO {1}" -f $sitePath, $destinationSitePath)
+        Copy-Item $sitePath -Destination $destinationSitePath -Recurse  | Out-Null
     }
 
-    Create-AcumaticaSite $instanceName $dbName $isNewDb $insertDemoData $isPortal $sitePath $commandToolPath
+    Upgrade-AcumaticaSite $instanceName $dbName $isPortal $sitePath $commandToolPath
 
     CleanupWebConfig $sitePath $erpPath
 }
