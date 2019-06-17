@@ -249,9 +249,9 @@ Function CleanupWebConfig($sitePath, $erpPath)
 function Upgrade-AcumaticaSite([string]$siteVirtualDirectoryName, [string]$databaseName, [bool]$isPortal, [string]$acuSitePath, [string]$commandToolDir)
 {
     Write-Host " "
-    Write-Host "===========================================================================================================================" -foregroundcolor $script:writeHostColor
+    Write-Host "========================================================================================================================" -foregroundcolor $script:writeHostColor
     Write-Host ("=====    BEGIN: Upgrading site {0} using database {1}" -f $siteVirtualDirectoryName, $databaseName ) -foregroundcolor $script:writeHostColor
-    Write-Host "===========================================================================================================================" -foregroundcolor $script:writeHostColor
+    Write-Host "========================================================================================================================" -foregroundcolor $script:writeHostColor
     Write-Host " "
     Write-Host " "
 
@@ -287,7 +287,7 @@ function Upgrade-AcumaticaSite([string]$siteVirtualDirectoryName, [string]$datab
     & $CMD $configMode $dbNew $dbWinAuth $dbServerName $dbName $dbConnWinAuth $sitePath $company $appPool $localWebsite $portalSite $virtualDirName
 
     Write-Host " "
-    Write-Host "===========================================================================================================================" -foregroundcolor $script:writeHostColor
+    Write-Host "========================================================================================================================" -foregroundcolor $script:writeHostColor
 
     # first part above updates the site files only. Here we need to also update the database
     $configMode = '-configmode:"DBMaint"'
@@ -304,9 +304,9 @@ function Upgrade-AcumaticaSite([string]$siteVirtualDirectoryName, [string]$datab
 
     Write-Host " " 
     Write-Host " "
-    Write-Host "===========================================================================================================================" -foregroundcolor $script:writeHostColor
+    Write-Host "========================================================================================================================" -foregroundcolor $script:writeHostColor
     Write-Host "=====    FINISHED: Upgrading site" -foregroundcolor $script:writeHostColor
-    Write-Host "===========================================================================================================================" -foregroundcolor $script:writeHostColor
+    Write-Host "========================================================================================================================" -foregroundcolor $script:writeHostColor
     Write-Host " "
 }
 

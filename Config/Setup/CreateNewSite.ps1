@@ -218,9 +218,9 @@ Function CleanupWebConfig($sitePath, $erpPath)
 function Create-AcumaticaSite([string]$siteVirtualDirectoryName, [string]$databaseName, [bool]$isNewDb, [bool]$insertDemoData, [bool]$isPortal, [string]$acuSitePath, [string]$commandToolDir)
 {
     Write-Host " "
-    Write-Host "===========================================================================================================================" -foregroundcolor $script:writeHostColor
+    Write-Host "========================================================================================================================" -foregroundcolor $script:writeHostColor
     Write-Host ("=====    BEGIN: Creating new site {0} using database {1}" -f $siteVirtualDirectoryName, $databaseName ) -foregroundcolor $script:writeHostColor
-    Write-Host "===========================================================================================================================" -foregroundcolor $script:writeHostColor
+    Write-Host "========================================================================================================================" -foregroundcolor $script:writeHostColor
     Write-Host " "
     Write-Host " "
 
@@ -261,9 +261,9 @@ function Create-AcumaticaSite([string]$siteVirtualDirectoryName, [string]$databa
 
     Write-Host " " 
     Write-Host " "
-    Write-Host "===========================================================================================================================" -foregroundcolor $script:writeHostColor
+    Write-Host "========================================================================================================================" -foregroundcolor $script:writeHostColor
     Write-Host "=====    FINISHED: Creating new site" -foregroundcolor $script:writeHostColor
-    Write-Host "===========================================================================================================================" -foregroundcolor $script:writeHostColor
+    Write-Host "========================================================================================================================" -foregroundcolor $script:writeHostColor
     Write-Host " "
 }
 
