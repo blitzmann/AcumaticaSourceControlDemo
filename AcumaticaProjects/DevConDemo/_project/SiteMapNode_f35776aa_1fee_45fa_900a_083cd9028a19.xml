@@ -26,7 +26,9 @@
         <data>
             <SiteMap>
                 <row Position="7847" Title="DC Inventory Inquiry" Url="~/Pages/DC/DC508000.aspx" Expanded="0" IsFolder="0" ScreenID="DC508000" NodeID="f35776aa-1fee-45fa-900a-083cd9028a19" ParentID="5b7b3f4a-4212-4a3a-a8ec-9ead4a936ff3">
-                    <MUIScreen IsPortal="0" WorkspaceID="6557c1c6-747e-45bb-9072-54f096598d61" Order="85" SubcategoryID="98e86774-69e3-41ea-b94f-eb2c7a8426d4" />
+                    <MUIScreen IsPortal="0" WorkspaceID="6557c1c6-747e-45bb-9072-54f096598d61" Order="85" SubcategoryID="98e86774-69e3-41ea-b94f-eb2c7a8426d4">
+                        <MUIPinnedScreen IsPortal="0" Username="" IsPinned="1" />
+                    </MUIScreen>
                 </row>
             </SiteMap>
             <MUIWorkspace>

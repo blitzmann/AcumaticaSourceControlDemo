@@ -1,0 +1,10 @@
+﻿<Sql TableName="DCSetup" TableSchemaXml="#CDATA">
+    <CDATA name="TableSchemaXml"><![CDATA[<table name="DCSetup">
+  <col name="CompanyID" type="Int" default="Zero" />
+  <col name="PluginOnPublished" type="NVarChar(500)" nullable="true" />
+  <col name="PluginUpdateDatabase" type="NVarChar(500)" nullable="true" />
+  <index name="DCSetup_PK" clustered="true" primary="true" unique="true">
+    <col name="CompanyID" />
+  </index>
+</table>]]></CDATA>
+</Sql>
