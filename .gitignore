@@ -346,3 +346,4 @@ healthchecksdb
 /AcumaticaProjects/Install
 /Config/Installer/*
 !/Config/Installer/UnzipInstall.ps1
+/Config/Setup/*.txt
