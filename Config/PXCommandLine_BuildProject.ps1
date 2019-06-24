@@ -46,7 +46,7 @@ try
     $projectVersionDate = Get-ProjectVersionDate $projectDll "yyyy.MM.dd (HH:mm)"
     $projectDesc = ("{0} - {1}" -f $acuProject, $projectVersionDate )
 
-    $exp = "$pxCommand /method `"$pxMethod`" /website `"$website`" /in `"$acuProjectRoot`" /out `"$acuProjectOutput`" /level `"0`" /description `"$projectDesc`""
+    $exp = "& '$pxCommand' /method `"$pxMethod`" /website `"$website`" /in `"$acuProjectRoot`" /out `"$acuProjectOutput`" /level `"0`" /description `"$projectDesc`""
     Write-Host $exp
     Write-Host " "
 
