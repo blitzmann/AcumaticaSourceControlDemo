@@ -19,3 +19,10 @@ jobs:
       
     - name: Restore Packages
       run: nuget restore DevConDemo.sln
+      
+    - name: Build Solution
+      run: msbuild.exe DevConDemo.sln /nologo /nr:false /p:Configuration=Release /target:Rebuild
+      
+    - name: print dir
+      run: dir
+    
