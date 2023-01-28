@@ -1,0 +1,28 @@
+name: Build
+
+on:
+  push:
+    branches: master
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: print files
+      run: dir 
+      
+    - name: Setup MSBuild
+      uses: microsoft/setup-msbuild@v1
+      
+    - name: Restore Packages
+      run: nuget restore DevConDemo.sln
+      
+    - name: Build Solution
+      run: msbuild.exe DevConDemo.sln /nologo /nr:false /p:Configuration=Release /target:Rebuild
+      
+    - name: print dir
+      run: dir
+    
